@@ -13,11 +13,6 @@ class TarefaController {
 
     def index(Integer max) {
 
-        //inicializacao das categorias padrao "pessoal" e "profissional"
-        if(Tarefa.count()==0){
-            padrao()
-        }
-
         //Contador de tarefas concluidas
         Integer tarefasConcluidas = 0
         Tarefa.getAll().each { obj ->
@@ -32,7 +27,7 @@ class TarefaController {
         respond Tarefa.list(params), model:[tarefaInstanceCount: Tarefa.count(), tarefasConcluidasCount: tarefasConcluidas]
     }
 
-    def padrao(){
+    /*def padrao(){
         //cadastra as duas categorias na inicializacao
         Categoria a  = new Categoria()
         a.setNome("Pessoal")
@@ -41,7 +36,7 @@ class TarefaController {
         Categoria b  = new Categoria()
         b.setNome("Profissional")
         b.save flush:true
-    }
+    }*/
 
     def show(Tarefa tarefaInstance) {
         respond tarefaInstance

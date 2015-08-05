@@ -1,122 +1,167 @@
+<%@ page import="listatarefas.Tarefa" %>
+<%@ page import="listatarefas.Categoria" %>
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta name="layout" content="main"/>
-		<title>Welcome to Grails</title>
-		<style type="text/css" media="screen">
-			#status {
-				background-color: #eee;
-				border: .2em solid #fff;
-				margin: 2em 2em 1em;
-				padding: 1em;
-				width: 12em;
-				float: left;
-				-moz-box-shadow: 0px 0px 1.25em #ccc;
-				-webkit-box-shadow: 0px 0px 1.25em #ccc;
-				box-shadow: 0px 0px 1.25em #ccc;
-				-moz-border-radius: 0.6em;
-				-webkit-border-radius: 0.6em;
-				border-radius: 0.6em;
-			}
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Tarefas</title>
+	<link rel="stylesheet" href="assets/tasks.css"/>
 
-			.ie6 #status {
-				display: inline; /* float double margin fix http://www.positioniseverything.net/explorer/doubled-margin.html */
-			}
+	<script src="assets/jquery.validate.js" type="text/javascript" ></script>
+	<script src="assets/date.js" type="text/javascript" ></script>
+	<script src="assets/jquery.tmpl.js" type="text/javascript" ></script>
+	<script src="assets/jquery-serialization.js" type="text/javascript" ></script>
+	<script src="assets/tasks-controller.js" type="text/javascript" ></script>
+	<script src="assets/tasks-webstorage.js" type="text/javascript" ></script>
 
-			#status ul {
-				font-size: 0.9em;
-				list-style-type: none;
-				margin-bottom: 0.6em;
-				padding: 0;
-			}
 
-			#status li {
-				line-height: 1.3;
-			}
+	<meta name="layout" content="main">
 
-			#status h1 {
-				text-transform: uppercase;
-				font-size: 1.1em;
-				margin: 0 0 0.3em;
-			}
+</head>
+<body>
+<header>
+	<span>Lista de Tarefas</span>
+</header>
 
-			#page-body {
-				margin: 2em 1em 1.25em 18em;
-			}
+<main id="taskPage">
+	<section id="taskCreation" class="not">
+		<g:form controller="tarefa"  action="save" >
 
-			h2 {
-				margin-top: 1em;
-				margin-bottom: 0.3em;
-				font-size: 1em;
-			}
 
-			p {
-				line-height: 1.5;
-				margin: 0.25em 0;
-			}
+			<input type="hidden" name="id" />
+			<input type="hidden" name="completed" />
 
-			#controller-list ul {
-				list-style-position: inside;
-			}
 
-			#controller-list li {
-				line-height: 1.3;
-				list-style-position: inside;
-				margin: 0.25em 0;
-			}
+			<div  class="${hasErrors(bean: tarefaInstance, field: 'descricao', 'error')} required">
+				<label for="descricao">
+					<g:message code="tarefa.descricao.label" default="Descricao" />
+					<span class="required-indicator">*</span>
+				</label>
+				<g:textField name="descricao" required="" value="${tarefaInstance?.descricao}"/>
 
-			@media screen and (max-width: 480px) {
-				#status {
-					display: none;
-				}
-
-				#page-body {
-					margin: 0 1em 1em;
-				}
-
-				#page-body h1 {
-					margin-top: 0;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<a href="#page-body" class="skip"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div id="status" role="complementary">
-			<h1>Application Status</h1>
-			<ul>
-				<li>App version: <g:meta name="app.version"/></li>
-				<li>Grails version: <g:meta name="app.grails.version"/></li>
-				<li>Groovy version: ${GroovySystem.getVersion()}</li>
-				<li>JVM version: ${System.getProperty('java.version')}</li>
-				<li>Reloading active: ${grails.util.Environment.reloadingAgentEnabled}</li>
-				<li>Controllers: ${grailsApplication.controllerClasses.size()}</li>
-				<li>Domains: ${grailsApplication.domainClasses.size()}</li>
-				<li>Services: ${grailsApplication.serviceClasses.size()}</li>
-				<li>Tag Libraries: ${grailsApplication.tagLibClasses.size()}</li>
-			</ul>
-			<h1>Installed Plugins</h1>
-			<ul>
-				<g:each var="plugin" in="${applicationContext.getBean('pluginManager').allPlugins}">
-					<li>${plugin.name} - ${plugin.version}</li>
-				</g:each>
-			</ul>
-		</div>
-		<div id="page-body" role="main">
-			<h1>Welcome to Grails</h1>
-			<p>Congratulations, you have successfully started your first Grails application! At the moment
-			   this is the default page, feel free to modify it to either redirect to a controller or display whatever
-			   content you may choose. Below is a list of controllers that are currently deployed in this application,
-			   click on each to execute its default action:</p>
-
-			<div id="controller-list" role="navigation">
-				<h2>Available Controllers:</h2>
-				<ul>
-					<g:each var="c" in="${grailsApplication.controllerClasses.sort { it.fullName } }">
-						<li class="controller"><g:link controller="${c.logicalPropertyName}">${c.fullName}</g:link></li>
-					</g:each>
-				</ul>
 			</div>
-		</div>
-	</body>
+
+			<div  class="${hasErrors(bean: tarefaInstance, field: 'deadline', 'error')} required">
+				<label for="deadline">
+					<g:message code="tarefa.deadline.label" default="Deadline" />
+					<span class="required-indicator">*</span>
+				</label>
+				<g:datePicker name="deadline" precision="day"  value="${tarefaInstance?.deadline}"  />
+
+			</div>
+
+			<div class="${hasErrors(bean: tarefaInstance, field: 'categoria', 'error')} required">
+				<label for="categoria">
+					<g:message code="tarefa.categoria.label" default="Categoria" />
+					<span class="required-indicator">*</span>
+				</label>
+				<g:select id="categoria" name="categoria.id" from="${listatarefas.Categoria.list()}" optionKey="id" required="" value="${tarefaInstance?.categoria?.id}" class="many-to-one"/>
+
+			</div>
+
+
+			<nav>
+
+				<g:submitButton name="create" class="save" value="Salvar tarefa" />
+				<a href="#" id="clearTask">Limpar tarefa</a>
+
+			</nav>
+		</g:form>
+	</section>
+	<section>
+		<table id="tblTasks">
+			<colgroup>
+				<col width="40%">
+				<col width="15%">
+				<col width="15%">
+				<col width="30%">
+			</colgroup>
+			<thead>
+			<tr>
+				<th>Nome</th>
+				<th>Deadline</th>
+				<th>Categoria</th>
+				<th>Ações</th>
+
+			</tr>
+			</thead>
+			<tbody>
+
+			<g:each in="${tarefaInstanceList}" status="i" var="tarefaInstance">
+				<tr class="${((i % 2) == 0 ? 'even' : 'odd')}
+							${(tarefaInstance.deadline < new Date() - 1 ? 'overdue' : 'null')}
+							${((((tarefaInstance.deadline.time - (new Date()-1).time) / (24 * 60 * 60 * 1000)) <= 5) &&
+							(((tarefaInstance.deadline.time - (new Date()-1).time) / (24 * 60 * 60 * 1000)) >= 0) ? 'warning': 'null')}">
+
+
+					<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}"><g:link action="show" id="${tarefaInstance.id}">${fieldValue(bean: tarefaInstance, field: "descricao")}</g:link></td>
+
+					<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}"><g:formatDate format="dd-MM-yyyy" date="${tarefaInstance.deadline}" /></td>
+
+					<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}">${fieldValue(bean: tarefaInstance, field: "categoria")}</td>
+
+					<td>
+						<g:form url="[resource:tarefaInstance, action:'delete']" method="DELETE">
+							<fieldset class="buttons">
+								<g:if test="${!tarefaInstance.concluido}">
+									<g:link class="edit" action="edit" resource="${tarefaInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
+								</g:if>
+								<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Você tem certeza?')}');" />
+								<g:if test="${!tarefaInstance.concluido}">
+									<g:actionSubmit action="concluir" value="Concluir"/>
+								</g:if>
+							</fieldset>
+						</g:form>
+					</td>
+
+				</tr>
+			</g:each>
+
+			</tbody>
+		</table>
+		<nav>
+			<a href="#" id="btnAddTask">Adicionar tarefa</a>
+			<a href="categoria">Gerenciar Categorias</a>
+		</nav>
+	</section>
+</main>
+<script id="taskRow" type="text/x-jQuery-tmpl">
+	<tr id="{{= id }}">
+		<td>{{= task }}</td>
+		<td><time datetime="{{= requiredBy }}"> {{= requiredBy }}</time></td>
+		<td>{{= category_desc }}</td>
+		<td>
+			<nav>
+				<a href="#" class="editRow" data-task-id="{{= id }}">Editar</a>
+				<a href="#" class="completedRow" data-task-id="{{= id }}">Completar</a>
+				<a href="#" class="deleteRow" data-task-id="{{= id }}">Deletar</a>
+			</nav>
+		</td>
+	</tr>
+</script>
+
+
+<script>
+	$(document).ready(function() {
+		tasksController.init($('#taskPage'), function() {
+			tasksController.loadTasks();
+		});
+		//tasksController.init($('#taskPage'));
+		//tasksController.loadTasks();
+	});
+</script>
+
+
+<footer>Você tem: <span id="taskCount">0</span> tarefas</footer>
+
+
+</body>
+
 </html>
+
+
+
+
+
+
+
