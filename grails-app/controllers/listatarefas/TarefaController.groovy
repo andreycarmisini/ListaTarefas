@@ -10,18 +10,22 @@ class TarefaController {
 
     static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
 
+
     def index(Integer max) {
+
+        //inicializacao das categorias padrao "pessoal" e "profissional"
         if(Tarefa.count()==0){
             padrao()
         }
+
+        //Contador de tarefas concluidas
         Integer tarefasConcluidas = 0
         Tarefa.getAll().each { obj ->
             if (obj.concluido == true)
                 tarefasConcluidas++
         }
 
-
-
+        //Ordenação
         params.max = Math.min(max ?: 10, 100)
         params.sort = 'deadline'
         params.order = 'asc'
@@ -29,6 +33,7 @@ class TarefaController {
     }
 
     def padrao(){
+        //cadastra as duas categorias na inicializacao
         Categoria a  = new Categoria()
         a.setNome("Pessoal")
         a.save()
