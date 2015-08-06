@@ -27,17 +27,6 @@ class TarefaController {
         respond Tarefa.list(params), model:[tarefaInstanceCount: Tarefa.count(), tarefasConcluidasCount: tarefasConcluidas]
     }
 
-    /*def padrao(){
-        //cadastra as duas categorias na inicializacao
-        Categoria a  = new Categoria()
-        a.setNome("Pessoal")
-        a.save()
-
-        Categoria b  = new Categoria()
-        b.setNome("Profissional")
-        b.save flush:true
-    }*/
-
     def show(Tarefa tarefaInstance) {
         respond tarefaInstance
     }

@@ -65,9 +65,15 @@ td {
     padding-left: 10px;
 }
 
-.even {
-    background-color: #f8f8f8;
+
+.odd {
+    background: #ffffff;
 }
+
+.even {
+    background: #f8f8f8;
+}
+
 
 nav {
     margin:15px 0 10px 0;
@@ -136,4 +142,8 @@ label.error {
 
 .taskCompleted {
     text-decoration: line-through;
+}
+
+.div {
+    padding-left: 10px;
 }

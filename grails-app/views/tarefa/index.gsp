@@ -1,77 +1,119 @@
-
-
-
 <%@ page import="listatarefas.Tarefa" %>
 <!DOCTYPE html>
 <html>
-<head>
+<<head>
+	<meta charset="utf-8">
+	<title>Tarefas</title>
+
+
+
+
+
+
 	<meta name="layout" content="main">
-	<g:set var="entityName" value="${message(code: 'tarefa.label', default: 'Tarefa')}" />
-	<title><g:message code="default.list.label" args="[entityName]" /></title>
+
 </head>
 <body>
-<a href="#list-tarefa" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-<div class="nav" role="navigation">
-	<ul>
-		<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-		<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
-	</ul>
-</div>
-<div id="list-tarefa" class="content scaffold-list" role="main">
-	<h1><g:message code="default.list.label" args="[entityName]" /></h1>
-	<g:if test="${flash.message}">
-		<div class="message" role="status">${flash.message}</div>
-	</g:if>
-	<table>
-		<thead>
-		<tr>
+<header>
+	<span>Lista de Tarefas</span>
+</header>
 
-			<g:sortableColumn property="descricao" title="${message(code: 'tarefa.descricao.label', default: 'Descricao')}" />
+<main id="taskPage">
+	<section id="taskCreation" class="not">
+		<g:form url="[resource:tarefaInstance, action:'save']" >
+			<input type="hidden" name="id" />
+			<input type="hidden" name="completed" />
+			<div>
+				<label>Tarefa</label>
 
-			<g:sortableColumn property="deadline" title="${message(code: 'tarefa.deadline.label', default: 'Deadline')}" />
-
-			<th><g:message code="tarefa.categoria.label" default="Categoria" /></th>
-			<th><g:message code="tarefa.categoria.label" default="Opções" /></th>
-
-		</tr>
-		</thead>
-		<tbody>
-		<g:each in="${tarefaInstanceList}" status="i" var="tarefaInstance">
-			<tr class="${((i % 2) == 0 ? 'even' : 'odd')}
-			${(tarefaInstance.deadline < new Date() - 1 ? 'overdue' : 'null')}
-			${((((tarefaInstance.deadline.time - (new Date()-1).time) / (24 * 60 * 60 * 1000)) <= 5) &&
-					(((tarefaInstance.deadline.time - (new Date()-1).time) / (24 * 60 * 60 * 1000)) >= 0) ? 'warning': 'null')}">
-
-
-
-				<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}"><g:link action="show" id="${tarefaInstance.id}">${fieldValue(bean: tarefaInstance, field: "descricao")}</g:link></td>
-
-				<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}"><g:formatDate format="dd-MM-yyyy" date="${tarefaInstance.deadline}" /></td>
-
-				<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}">${fieldValue(bean: tarefaInstance, field: "categoria")}</td>
-
-				<td>
-					<g:form url="[resource:tarefaInstance, action:'delete']" method="DELETE">
-						<fieldset class="buttons">
-							<g:if test="${!tarefaInstance.concluido}">
-								<g:link class="edit" action="edit" resource="${tarefaInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-							</g:if>
-							<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Você tem certeza?')}');" />
-							<g:if test="${!tarefaInstance.concluido}">
-								<g:actionSubmit action="concluir" value="Concluir"/>
-							</g:if>
-						</fieldset>
-					</g:form>
-				</td>
-
+				<g:textField name="descricao" placeholder="Estudar e programar" required="required" maxlength="200" value="${tarefaInstance?.descricao}"/>
+			</div>
+			<div>
+				<label>Finalizar até</label>
+				<g:datePicker name="deadline" precision="day"  value="${tarefaInstance?.deadline}"  />
+			</div>
+			<div>
+				<label>Categoria</label>
+				<g:select id="categoria" name="categoria.id" from="${listatarefas.Categoria.list()}" optionKey="id" required="" value="${tarefaInstance?.categoria?.id}" class="many-to-one"/>
+			</div>
+			<nav>
+				<g:submitButton name="create" value="Salvar tarefa" />
+				<a href="#" id="clearTask">Limpar tarefa</a>
+			</nav>
+		</g:form>
+	</section>
+	<section>
+		<table id="tblTasks">
+			<colgroup>
+				<col width="40%">
+				<col width="15%">
+				<col width="15%">
+				<col width="30%">
+			</colgroup>
+			<thead>
+			<tr>
+				<th>Nome</th>
+				<th>Deadline</th>
+				<th>Categoria</th>
+				<th>Ações</th>
 			</tr>
-		</g:each>
-		</tbody>
-	</table>
-	<center> <strong>Você tem: ${tarefaInstanceCount - tarefasConcluidasCount} tarefas</strong></center></div> </br>
-<div class="pagination">
-	<g:paginate total="${tarefaInstanceCount ?: 0}" />
-</div>
-</div>
+			</thead>
+			<tbody>
+
+				<g:each in="${tarefaInstanceList}" status="i" var="tarefaInstance">
+					<tr class="${((i % 2) == 0 ? 'even' : 'odd')}
+							${(tarefaInstance.deadline < new Date() - 1 ? 'overdue' : 'null')}
+							${((((tarefaInstance.deadline.time - (new Date()-1).time) / (24 * 60 * 60 * 1000)) <= 5) &&
+							(((tarefaInstance.deadline.time - (new Date()-1).time) / (24 * 60 * 60 * 1000)) >= 0) ? 'warning': 'null')}">
+
+
+					<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}">${fieldValue(bean: tarefaInstance, field: "descricao")}</td>
+
+						<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}"><g:formatDate format="dd-MM-yyyy" date="${tarefaInstance.deadline}" /></td>
+
+						<td class="${tarefaInstance.concluido ? 'taskCompleted': ''}">${fieldValue(bean: tarefaInstance, field: "categoria")}</td>
+
+						<td>
+							<g:form url="[resource:tarefaInstance, action:'delete']" method="DELETE">
+								<nav>
+									<g:if test="${!tarefaInstance.concluido}">
+										<g:link class="edit" action="edit" resource="${tarefaInstance}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
+									</g:if>
+									<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+									<g:if test="${!tarefaInstance.concluido}">
+										<g:actionSubmit action="concluir" value="Concluir"/>
+									</g:if>
+								</nav>
+							</g:form>
+						</td>
+
+					</tr>
+				</g:each>
+
+			</tbody>
+		</table>
+		<nav>
+			<a href="#" id="btnAddTask">Adicionar tarefa</a>
+			<a href="categoria">Gerenciar Categorias</a>
+		</nav>
+	</section>
+</main>
+
+
+
+<script>
+	$(document).ready(function() {
+		tasksController.init($('#taskPage'), function() {
+			tasksController.loadTasks();
+		});
+		//tasksController.init($('#taskPage'));
+		//tasksController.loadTasks();
+	});
+</script>
+
+
+
+<footer>Você tem <span id="taskCount">${tarefaInstanceCount - tarefasConcluidasCount}</span> tarefas</footer>
 </body>
+
 </html>
