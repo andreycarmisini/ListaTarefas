@@ -94,7 +94,7 @@
 		</table>
 		<nav>
 			<a href="#" id="btnAddTask">Adicionar tarefa</a>
-			<a href="categoria">Gerenciar Categorias</a>
+			<a href="/ListaTarefas/categoria/create">Gerenciar Categorias</a>
 		</nav>
 	</section>
 </main>

@@ -51,7 +51,7 @@
 
 
 
-	<footer>Você tem <span id="taskCount">0</span> tarefas</footer>
+	<footer></footer>
 	</body>
 
 </html>
