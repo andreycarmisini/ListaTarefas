@@ -38,7 +38,7 @@
 			</div>
 			<nav>
 				<g:submitButton name="create" value="Salvar tarefa" />
-				<a href="#" id="clearTask">Limpar tarefa</a>
+				<input type='reset' value='Limpar tarefa' />
 			</nav>
 		</g:form>
 	</section>
@@ -81,7 +81,9 @@
 									</g:if>
 									<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
 									<g:if test="${!tarefaInstance.concluido}">
-										<g:actionSubmit action="concluir" value="Concluir"/>
+										<g:link   action="concluir" resource="${tarefaInstance}">
+											<g:message code="default.button.complete.label" default="Completar" />
+										</g:link>
 									</g:if>
 								</nav>
 							</g:form>
@@ -96,6 +98,8 @@
 			<a href="#" id="btnAddTask">Adicionar tarefa</a>
 			<a href="/ListaTarefas/categoria/create">Gerenciar Categorias</a>
 		</nav>
+
+
 	</section>
 </main>
 
@@ -111,9 +115,9 @@
 	});
 </script>
 
+<footer>Você tem ${tarefaInstanceCount - tarefasConcluidasCount} tarefas</footer>
 
 
-<footer>Você tem <span id="taskCount">${tarefaInstanceCount - tarefasConcluidasCount}</span> tarefas</footer>
 </body>
 
 </html>
