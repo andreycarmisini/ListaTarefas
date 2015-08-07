@@ -2,9 +2,9 @@
 MPI909 - Exercicio 3 - Implementação em grails
 
 # Link:
-http://uakk2ac3cee8.andreycarmisini.koding.io:8080/ListaTarefas/
+http://desolate-badlands-6024.herokuapp.com/
 
 #Observação
-Como a conta no Koding é free a VM fica online somente por 1h, caso o link esteja offline será necessário inicia-lá.
+Na primeira tentativa geralmente aparece uma mensagem erro (acho que o heroku está desligado). É só atualizar a página (F5) que o sistema funciona.
 
 
